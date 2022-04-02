@@ -1,0 +1,20 @@
+---
+- name: Common setup
+  hosts: localhost
+  tasks:
+    - name: Install basic packages 
+      become: yes
+      ansible.builtin.apt:	
+        state: present
+        pkg:
+          - vim
+          - apt-file
+          - aptitude
+          - git
+
+    - name: Backport repository
+      become: yes
+      ansible.builtin.apt_repository:
+        state: present
+        filename: backports
+        repo: deb http://deb.debian.org/debian bullseye-backports main contrib non-free
