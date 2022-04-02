@@ -21,55 +21,77 @@
         state: present
         filename: backports
         repo: deb http://deb.debian.org/debian bullseye-backports main contrib non-free
+
     - name: Download firefox
       ansible.builtin.get_url:
        url: https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-CA
        dest: "/home/{{ ansible_env['USER'] }}/Downloads/latest-firefox.tar.bz2"
+
     - name: Unarchive firefox
       ansible.builtin.unarchive:
         creates: /home/{{ ansible_env['USER']}}/firefox/firefox
         dest: "/home/{{ ansible_env['USER'] }}"
         src: "/home/{{ ansible_env['USER'] }}/Downloads/latest-firefox.tar.bz2"
+          
     - name: Create bin directory
       ansible.builtin.file:
         path: "/home/{{ ansible_env['USER'] }}/bin"
         state: directory
         mode: "0755"
+
     - name: Create symlink for firefox
       ansible.builtin.file:
         src: /home/{{ ansible_env['USER']}}/firefox/firefox
         dest: /home/{{ansible_env['USER']}}/bin/firefox
         state: link
+
     - name: Remove firefox-esr 
       become: yes
       ansible.builtin.apt:	
         state: absent
         name: firefox-esr
+
     - name: Set alternatives for x-www-browser
       become: yes
       community.general.alternatives:
         name: x-www-browser
         path: /home/{{ ansible_env['USER']}}/firefox/firefox
         priority: 200
+
     - name: Install Steam
       become: yes
       ansible.builtin.apt:
         deb: https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb
+
     - name: Add Firefox menu entry
       template:
         src: templates/firefox.desktop.j2
         dest: /home/{{ansible_env['USER']}}/.local/share/applications/firefox.desktop
+
     - name: Download Discord
       ansible.builtin.get_url:
         url: https://discord.com/api/download?platform=linux&format=tar.gz
         dest: "/home/{{ ansible_env['USER'] }}/Downloads/discord.tar.gz"
+
     - name: Unarchive Discord
       ansible.builtin.unarchive:
         creates: /home/{{ ansible_env['USER']}}/bin/Discord/Discord
         dest: "/home/{{ ansible_env['USER'] }}/bin/"
         src: "/home/{{ ansible_env['USER'] }}/Downloads/discord.tar.gz"
+
     - name: Create symlink to Discord
       ansible.builtin.file:
         state: link
         src: "/home/{{ ansible_env['USER'] }}/bin/Discord/Discord"
         dest: "/home/{{ ansible_env['USER'] }}/bin/discord"
+
+    - name: Create .ssh folder
+      ansible.builtin.file:
+        state: directory
+        path: /home/{{ ansible_env['USER'] }}/.ssh/
+        mode: 0700
+
+    - name: Generate SSH keys
+      community.crypto.openssh_keypair:
+        comment: "{{ ansible_env['USER'] }}@{{ ansible_facts['hostname']}}"
+        path: "/home/{{ ansible_env['USER']}}/.ssh/id_ssh_rsa"
