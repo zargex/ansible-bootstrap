@@ -106,7 +106,7 @@
       become: yes
       ansible.builtin.apt_repository:
         state: present
-        filename: spotify.list
+        filename: spotify
         repo: deb http://repository.spotify.com stable non-free
 
     - name: Install spotify
@@ -114,3 +114,24 @@
       ansible.builtin.apt:	
         state: present
         name: spotify-client
+          
+    - name: Install dropbox repo key
+      become: yes
+      ansible.builtin.apt_key:
+        keyserver: pgp.mit.edu
+        id: 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
+        state: present
+
+    - name: Install dropbox repository
+      become: yes
+      ansible.builtin.apt_repository:
+        state: present
+        filename: dropbox
+        repo: deb https://linux.dropbox.com/debian buster main
+            
+    - name: Install dropbox
+      become: yes
+      ansible.builtin.apt:	
+        state: present
+        name: dropbox
+
