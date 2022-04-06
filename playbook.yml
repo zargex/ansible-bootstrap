@@ -103,6 +103,11 @@
         src: "/home/{{ ansible_env['USER'] }}/bin/Discord/Discord"
         dest: "/home/{{ ansible_env['USER'] }}/bin/discord"
 
+    - name: Add Discord menu entry
+      template:
+        src: templates/discord.desktop.j2
+        dest: /home/{{ansible_env['USER']}}/.local/share/applications/discord.desktop
+
     - name: Create .ssh folder
       ansible.builtin.file:
         state: directory
