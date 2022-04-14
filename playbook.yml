@@ -7,6 +7,8 @@
       ansible.builtin.apt:	
         state: present
         pkg:
+          - cabextract
+          - pavucontrol-qt
           - ktorrent
           - vim
           - apt-file
