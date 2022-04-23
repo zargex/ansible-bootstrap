@@ -7,6 +7,7 @@
       ansible.builtin.apt:	
         state: present
         pkg:
+          - plasma-discover-backend-flatpak
           - cabextract
           - pavucontrol-qt
           - ktorrent
@@ -160,3 +161,6 @@
         state: present
         name: dropbox
 
+    - name: flatpak repo
+      become: yes
+      ansible.builtin.command: "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
