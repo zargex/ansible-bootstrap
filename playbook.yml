@@ -18,7 +18,10 @@
           - vlc
           - kmymoney
           - syncplay
+          - bind9-dnsutils
           - chromium
+          - bash-completion
+          - unrar
 
     - name: Backport repository
       become: yes
